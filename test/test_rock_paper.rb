@@ -5,36 +5,36 @@ require './lib/rock_paper.rb'
 class AppTest < Test::Unit::TestCase
   include Rack::Test::Methods
 
+  def setup
+    @nav = Rack::Test::Session.new(Rack::MockSession.new(Rack::Session::Cookie.new(RockPaperScissors::App.new, 
+                 :key => 'rack.session', :domain => 'example.com', :secret => 'cookie')))
+  end
+
   def app
-    Rack::Session::Cookie.new(RockPaperScissors::App.new, :secret => 'cookie')
-  end
-
-  def choice_computer
-    computer_throw = 'paper'
-  end
-
-  def test_win
-    get"/?choice='scissors'"
-    last_response.body.include?("WIN!")
+    Rack::Builder.new do 
+      run @nav
+    end
   end
 
   def test_index
-    get "/"
-    assert last_response.ok?
+    @nav.get "/"
+    assert @nav.last_response.ok? 
   end
 
-  def test_rock
-    get"/?choice='rock'"
-    last_response.body.include?("WIN!")
+  def test_titulo
+    @nav.get "/"
+    assert_match "<title>RPS GAME</title>", @nav.last_response.body
   end
 
-  def test_header
-    get "/"
-    last_response.header == 'Content-Type'
+  def test_ganador
+    @nav.post "/?choice=scissors"
+    computer_throw = 'scissors'
+    assert_match "WIN", @nav.last_response.body
   end
 
-  def test_
-    get"/?choice='rock'"
-    assert last_response.ok?
+  def test_perdedor
+    @nav.post "/?choice=paper"
+    computer_throw = 'scissors'
+    assert_match "LOSE", @nav.last_response.body
   end
 end
