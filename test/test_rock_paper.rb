@@ -26,12 +26,6 @@ class AppTest < Test::Unit::TestCase
     assert_match "<title>RPS GAME</title>", @nav.last_response.body
   end
 
-  def test_ganador
-    @nav.post "/?choice=scissors"
-    computer_throw = 'paper'
-    assert_match "WIN", @nav.last_response.body
-  end
-
   def test_estadistica
     @nav.get "/"
     assert_match "<h4>Estadisticas</h4>", @nav.last_response.body
