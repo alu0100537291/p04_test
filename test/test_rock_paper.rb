@@ -28,13 +28,12 @@ class AppTest < Test::Unit::TestCase
 
   def test_ganador
     @nav.post "/?choice=scissors"
-    computer_throw = 'scissors'
+    computer_throw = 'paper'
     assert_match "WIN", @nav.last_response.body
   end
 
-  def test_perdedor
-    @nav.post "/?choice=paper"
-    computer_throw = 'scissors'
-    assert_match "LOSE", @nav.last_response.body
+  def test_estadistica
+    @nav.get "/"
+    assert_match "<h4>Estadisticas</h4>", @nav.last_response.body
   end
 end
